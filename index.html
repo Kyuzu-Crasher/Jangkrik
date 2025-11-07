@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Prediction Link Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- Konfigurasi Tema Neon & Cyberpunk --- */
+        :root {
+            --dark-bg: #0a0a14;
+            --card-bg: rgba(31, 41, 55, 0.5); /* Glassy dark blue */
+            --neon-primary: #00e0ff; /* Biru Cyan */
+            --neon-secondary: #ff00c8; /* Fuchsia Pink */
+            --text-glow-primary: 0 0 8px var(--neon-primary);
+            --text-glow-secondary: 0 0 8px var(--neon-secondary);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* --- Glassmorphism Card Style --- */
+        .info-card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 224, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 224, 255, 0.1);
+        }
+
+        /* --- Neon Input & Focus --- */
+        .neon-input {
+            background-color: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(0, 224, 255, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .neon-input:focus {
+            outline: none;
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 5px var(--neon-primary);
+        }
+
+        /* --- Neon Button Primary --- */
+        .neon-btn-primary {
+            background: linear-gradient(90deg, var(--neon-primary), #00aaff);
+            box-shadow: 0 0 10px var(--neon-primary);
+            transition: all 0.3s ease;
+        }
+        .neon-btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px var(--neon-primary);
+        }
+
+        /* --- Neon Button Secondary (Support/Pilih) --- */
+        .neon-btn-support {
+            background: linear-gradient(135deg, var(--neon-secondary), #ff50a0);
+            box-shadow: 0 0 8px var(--neon-secondary);
+            transition: all 0.3s ease;
+            transform: scale(1);
+        }
+        .neon-btn-support:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--neon-secondary);
+        }
+        
+        /* --- Timer Style --- */
+        #timer {
+            text-shadow: var(--text-glow-secondary);
+            letter-spacing: 2px;
+            font-size: 2.5rem; /* Ukuran default desktop */
+        }
+
+        /* --- Responsive Timer for Mobile --- */
+        @media (max-width: 640px) {
+            #timer {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* --- Responsive Layout for Mobile --- */
+        .team-container-mobile {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (min-width: 640px) {
+            .team-container-mobile {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper max-w-xl w-full">
+
+        <!-- Notifikasi/Pesan Global -->
+        <div id="message-box" class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 p-3 rounded-xl shadow-xl z-50 transition-all duration-300" 
+             style="background-color: var(--neon-primary); color: var(--dark-bg); font-weight: bold;">
+        </div>
+
+        <!-- Bagian Pembuatan Prediksi (Creation Mode) -->
+        <div id="creation-form-section" class="info-card p-6 md:p-8 rounded-3xl animate-in hidden">
+            <h1 class="text-3xl font-extrabold mb-6 text-center" style="text-shadow: var(--text-glow-primary);">
+                <i data-lucide="zap" class="w-7 h-7 inline mr-2 align-top" style="color: var(--neon-primary);"></i> BUAT PREDIKSI TIM
+            </h1>
+
+            <form id="prediction-form" class="space-y-6">
+
+                <!-- Input Tim 1 & 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Tim 1 -->
+                    <div>
+                        <label for="team1-name" class="block mb-2 text-sm font-medium text-gray-300">Nama Tim 1 (Kiri)</label>
+                        <input type="text" id="team1-name" class="neon-input w-full p-3 rounded-xl" placeholder="Ex: EVOS LEGENDS" required>
+                        <label for="team1-image" class="block mt-3 mb-2 text-sm font-medium text-gray-300">Logo Tim 1 (URL)</label>
+                        <input type="url" id="team1-image" class="neon-input w-full p-3 rounded-xl" placeholder="Ex: https://placehold.co/100x100/00e0ff/000000?text=EVOS">
+                    </div>
+
+                    <!-- Tim 2 -->
+                    <div>
+                        <label for="team2-name" class="block mb-2 text-sm font-medium text-gray-300">Nama Tim 2 (Kanan)</label>
+                        <input type="text" id="team2-name" class="neon-input w-full p-3 rounded-xl" placeholder="Ex: RRQ HOSHI" required>
+                        <label for="team2-image" class="block mt-3 mb-2 text-sm font-medium text-gray-300">Logo Tim 2 (URL)</label>
+                        <input type="url" id="team2-image" class="neon-input w-full p-3 rounded-xl" placeholder="Ex: https://placehold.co/100x100/ff00c8/000000?text=RRQ">
+                    </div>
+                </div>
+
+                <!-- Deadline & Follow Link -->
+                <div>
+                    <label for="deadline-time" class="block mb-2 text-sm font-medium text-gray-300">Batas Waktu Prediksi (Tanggal & Jam)</label>
+                    <input type="datetime-local" id="deadline-time" class="neon-input w-full p-3 rounded-xl" required>
+                </div>
+
+                <div>
+                    <label for="follow-link" class="block mb-2 text-sm font-medium text-gray-300">Link Follow/Informasi (Ex: Telegram/Twitter)</label>
+                    <input type="url" id="follow-link" class="neon-input w-full p-3 rounded-xl" placeholder="https://t.me/channel_prediksi_anda" required>
+                </div>
+
+                <button type="submit" class="neon-btn-primary w-full p-3 mt-6 rounded-xl text-lg font-bold">
+                    GENERATOR LINK PREDIKSI <i data-lucide="link" class="w-5 h-5 inline ml-2"></i>
+                </button>
+            </form>
+
+            <!-- Area Tampilan Link Setelah Generate -->
+            <div id="result-area" class="mt-8 pt-6 border-t border-gray-700 hidden">
+                <p class="text-sm font-medium text-gray-300 mb-3">Link Prediksi Anda (Salin dan Bagikan!):</p>
+                <div class="flex space-x-2">
+                    <input type="text" id="share-link-input" readonly class="neon-input flex-grow p-3 rounded-xl text-sm" value="">
+                    <button id="copy-btn" class="neon-btn-primary p-3 rounded-xl flex-shrink-0 text-sm font-bold" onclick="copyLink()">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-2 italic">Pastikan Anda menyalin seluruh alamat link untuk memastikan parameter terikut.</p>
+            </div>
+
+        </div>
+
+        <!-- Bagian Tampilan Prediksi & Support (View Mode) -->
+        <div id="prediction-view-section" class="info-card p-6 md:p-8 rounded-3xl animate-in hidden text-center">
+            
+            <h1 class="text-2xl font-extrabold mb-2" style="text-shadow: var(--text-glow-primary);">PREDIKSI ESPORTS TERKINI</h1>
+            <p class="text-gray-400 mb-6 text-sm">Pilih Tim Jagoanmu Sebelum Waktu Habis!</p>
+
+            <!-- Timer Countdown -->
+            <div class="mb-8 p-4 rounded-xl font-mono border-2 border-dashed" style="border-color: var(--neon-secondary); background-color: rgba(255, 0, 200, 0.1);">
+                <p class="text-sm font-medium text-gray-200 mb-2">Batas Waktu Memprediksi:</p>
+                <div id="timer" class="font-bold text-white mb-2" style="color: var(--neon-secondary);">--:--:--</div>
+                <p id="timer-message" class="text-xs text-gray-300 italic"></p>
+            </div>
+
+            <!-- Team Selection Area -->
+            <div class="grid team-container-mobile gap-4">
+                
+                <!-- Tim 1 Card -->
+                <div id="team1-card" class="bg-gray-800/50 p-4 rounded-xl flex flex-col items-center border border-gray-700/50 shadow-lg">
+                    <img id="view-team1-img" src="https://placehold.co/100x100/00e0ff/000000?text=Tim+1" alt="Tim 1 Logo" class="w-20 h-20 rounded-full mb-3 border-4 border-white/10 object-cover">
+                    <h2 id="view-team1-name" class="text-xl font-bold text-white mb-4">TIM 1</h2>
+                    <button onclick="supportTeam(1)" class="neon-btn-support w-full p-3 rounded-xl text-base font-bold">
+                        <i data-lucide="thumbs-up" class="w-5 h-5 inline mr-2"></i> DUKUNG TIM 1
+                    </button>
+                </div>
+
+                <!-- Tim 2 Card -->
+                <div id="team2-card" class="bg-gray-800/50 p-4 rounded-xl flex flex-col items-center border border-gray-700/50 shadow-lg">
+                    <img id="view-team2-img" src="https://placehold.co/100x100/ff00c8/000000?text=Tim+2" alt="Tim 2 Logo" class="w-20 h-20 rounded-full mb-3 border-4 border-white/10 object-cover">
+                    <h2 id="view-team2-name" class="text-xl font-bold text-white mb-4">TIM 2</h2>
+                    <button onclick="supportTeam(2)" class="neon-btn-support w-full p-3 rounded-xl text-base font-bold" style="background: linear-gradient(135deg, var(--neon-primary), #00aaff); box-shadow: 0 0 8px var(--neon-primary);">
+                        <i data-lucide="thumbs-up" class="w-5 h-5 inline mr-2"></i> DUKUNG TIM 2
+                    </button>
+                </div>
+            </div>
+
+            <!-- Follow Link Area -->
+            <div class="mt-8 pt-6 border-t border-gray-700">
+                <p class="text-sm font-medium text-gray-300 mb-3">Ikuti hasil prediksi dan diskusi di:</p>
+                <a id="follow-link-btn" href="#" target="_blank" class="neon-btn-primary p-3 rounded-xl text-base font-bold inline-flex items-center" style="background: linear-gradient(90deg, #10b981, #00e0ff); box-shadow: 0 0 10px #10b981;">
+                    <i data-lucide="message-circle" class="w-5 h-5 mr-2"></i> IKUTI PREDIKSI <span id="follow-link-domain" class="ml-2 font-mono text-xs opacity-75"></span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Variabel Global
+        let countdownInterval;
+        const msgBox = document.getElementById('message-box');
+
+        /**
+         * Menampilkan pesan notifikasi ke pengguna.
+         * @param {string} message Pesan yang akan ditampilkan.
+         */
+        function showMessage(message) {
+            msgBox.textContent = message;
+            msgBox.classList.remove('hidden');
+            // Sembunyikan setelah 3 detik
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 3000);
+        }
+
+        /**
+         * Mengambil parameter dari URL.
+         * @returns {URLSearchParams} Objek parameter URL.
+         */
+        function getUrlParams() {
+            return new URLSearchParams(window.location.search);
+        }
+
+        /**
+         * Mengupdate tampilan hitungan mundur (countdown).
+         * @param {string} deadlineString Tanggal batas waktu dalam format string.
+         */
+        function updateCountdown(deadlineString) {
+            const deadline = new Date(deadlineString).getTime();
+
+            // Hentikan interval jika sudah ada
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            const timerElement = document.getElementById('timer');
+            const messageElement = document.getElementById('timer-message');
+
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = deadline - now;
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    timerElement.textContent = "00:00:00";
+                    messageElement.textContent = "Batas waktu prediksi sudah berakhir!";
+                    // Menonaktifkan tombol dukungan
+                    document.querySelectorAll('.neon-btn-support').forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                        btn.classList.remove('neon-btn-support');
+                    });
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                const pad = (num) => num < 10 ? '0' + num : num;
+
+                timerElement.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+                messageElement.textContent = `Deadline: ${new Date(deadlineString).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}`;
+
+            }, 1000);
+        }
+
+        /**
+         * Mengambil data tim dari parameter URL dan menampilkan View Mode.
+         * @param {URLSearchParams} params Parameter URL yang berisi data prediksi.
+         */
+        function displayPredictionView(params) {
+            const team1Name = decodeURIComponent(params.get('t1'));
+            const team1Img = decodeURIComponent(params.get('i1'));
+            const team2Name = decodeURIComponent(params.get('t2'));
+            const team2Img = decodeURIComponent(params.get('i2'));
+            const deadline = decodeURIComponent(params.get('d'));
+            const followLink = decodeURIComponent(params.get('f'));
+
+            // Tampilkan View Mode
+            document.getElementById('creation-form-section').classList.add('hidden');
+            document.getElementById('prediction-view-section').classList.remove('hidden');
+
+            // Isi data tim
+            document.getElementById('view-team1-name').textContent = team1Name;
+            document.getElementById('view-team1-img').src = team1Img;
+            document.getElementById('view-team1-img').onerror = function() {
+                // Fallback jika URL gambar rusak
+                this.onerror = null;
+                this.src = `https://placehold.co/100x100/0a0a14/00e0ff?text=${team1Name.substring(0, 4)}`;
+            };
+            
+            document.getElementById('view-team2-name').textContent = team2Name;
+            document.getElementById('view-team2-img').src = team2Img;
+            document.getElementById('view-team2-img').onerror = function() {
+                // Fallback jika URL gambar rusak
+                this.onerror = null;
+                this.src = `https://placehold.co/100x100/0a0a14/ff00c8?text=${team2Name.substring(0, 4)}`;
+            };
+
+            // Isi link follow
+            const followBtn = document.getElementById('follow-link-btn');
+            followBtn.href = followLink;
+            try {
+                const url = new URL(followLink);
+                document.getElementById('follow-link-domain').textContent = `(${url.hostname})`;
+            } catch (e) {
+                document.getElementById('follow-link-domain').textContent = "(Tautan)";
+            }
+            
+            // Mulai hitungan mundur
+            updateCountdown(deadline);
+
+            // Re-render ikon Lucide
+            lucide.createIcons();
+        }
+
+        /**
+         * Dipanggil saat pengguna mengklik tombol dukungan.
+         * @param {number} teamNumber 1 atau 2.
+         */
+        function supportTeam(teamNumber) {
+            const team1Name = document.getElementById('view-team1-name').textContent;
+            const team2Name = document.getElementById('view-team2-name').textContent;
+            const supportedTeam = teamNumber === 1 ? team1Name : team2Name;
+
+            showMessage(`Anda memilih: ${supportedTeam}! Semoga Prediksimu Benar!`);
+
+            // Menonaktifkan semua tombol dukungan setelah dipilih
+            document.querySelectorAll('.neon-btn-support').forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('neon-btn-support');
+            });
+
+            // Beri efek highlight pada tim yang didukung
+            const supportedCard = document.getElementById(`team${teamNumber}-card`);
+            supportedCard.classList.add('ring-4', 'ring-offset-2', 'ring-offset-gray-900');
+            supportedCard.style.cssText += `box-shadow: 0 0 25px var(--neon-secondary); border-color: var(--neon-secondary);`;
+
+            // Opsional: Buka link follow setelah dipilih (sesuai permintaan "otomatis mengarahkan ke follow prediksi")
+            // window.open(document.getElementById('follow-link-btn').href, '_blank');
+        }
+
+        /**
+         * Mengambil data form, membuat URL, dan menampilkannya.
+         */
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const t1 = document.getElementById('team1-name').value;
+            let i1 = document.getElementById('team1-image').value;
+            const t2 = document.getElementById('team2-name').value;
+            let i2 = document.getElementById('team2-image').value;
+            const deadline = document.getElementById('deadline-time').value;
+            const follow = document.getElementById('follow-link').value;
+
+            // Tambahkan nilai default placeholder jika input URL kosong
+            if (!i1) i1 = `https://placehold.co/100x100/00e0ff/0a0a14?text=${t1.substring(0, 4).toUpperCase()}`;
+            if (!i2) i2 = `https://placehold.co/100x100/ff00c8/0a0a14?text=${t2.substring(0, 4).toUpperCase()}`;
+
+            const params = new URLSearchParams();
+            params.append('t1', encodeURIComponent(t1));
+            params.append('i1', encodeURIComponent(i1));
+            params.append('t2', encodeURIComponent(t2));
+            params.append('i2', encodeURIComponent(i2));
+            // Simpan dalam format ISO untuk akurasi. Date() harus dipanggil dari string datetime-local
+            params.append('d', encodeURIComponent(new Date(deadline).toISOString())); 
+            params.append('f', encodeURIComponent(follow));
+
+            // --- PERBAIKAN KRUSIAL: Menggunakan window.location.href untuk mendapatkan base URL yang akurat ---
+            // Ini akan memastikan link tetap utuh meskipun dibuka dari file:///
+            const baseUrl = window.location.href.split('?')[0];
+            const shareableLink = baseUrl + '?' + params.toString();
+
+            document.getElementById('share-link-input').value = shareableLink;
+            document.getElementById('result-area').classList.remove('hidden');
+            
+            showMessage("Link berhasil dibuat! Silakan salin.");
+        });
+
+        /**
+         * Menyalin link ke clipboard.
+         */
+        function copyLink() {
+            const linkInput = document.getElementById('share-link-input');
+            linkInput.select();
+            // Fallback untuk iFrame / batasan keamanan
+            try {
+                document.execCommand('copy');
+                showMessage("Link berhasil disalin!");
+            } catch (err) {
+                // Jika execCommand gagal, berikan instruksi manual
+                showMessage("Gagal menyalin, silakan salin teks secara manual.");
+            }
+        }
+
+        // --- Inisialisasi App ---
+        window.onload = function() {
+            const params = getUrlParams();
+            
+            if (params.has('t1') && params.has('t2') && params.has('d')) {
+                // Mode Tampilan Prediksi
+                displayPredictionView(params);
+            } else {
+                // Mode Pembuatan Form
+                document.getElementById('prediction-view-section').classList.add('hidden');
+                document.getElementById('creation-form-section').classList.remove('hidden');
+            }
+
+            // Inisialisasi ikon Lucide
+            lucide.createIcons();
+        };
+
+    </script>
+</body>
+</html>
